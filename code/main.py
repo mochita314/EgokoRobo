@@ -173,5 +173,11 @@ if __name__ == '__main__':
         dst = get_concat_h(dst[0],dst[1])
 
         #各パーツ配置
+
+        
+
+
+
+
         
         dst.save("../img2/img" + datetime.now().strftime("%Y%m%d_%H%M%S%f_") +".jpg", "JPEG")
