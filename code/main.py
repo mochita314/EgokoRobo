@@ -1,7 +1,7 @@
 import cv2
 import dlib
-import matplotlib.pyplot as plt
-import matplotlib.patches as patches
+#import matplotlib.pyplot as plt
+#import matplotlib.patches as patches
 import os
 
 from PIL import Image, ImageOps
@@ -23,7 +23,6 @@ def ImgSplit_ver(im):
         for w1 in range(2):
             w2 = w1 * width
             h2 = h1 * height
-            #print(w2, h2, width + w2, height + h2)
             c = im.crop((w2, h2, width + w2, height + h2))
             buff.append(c)
     return buff
@@ -40,7 +39,6 @@ def ImgSplit_hor(im):
         for w1 in range(1):
             w2 = w1 * width
             h2 = h1 * height
-            print(w2, h2, width + w2, height + h2)
             c = im.crop((w2, h2, width + w2, height + h2))
             buff.append(c)
     return buff
@@ -112,7 +110,7 @@ def get_concat_v(im1, im2):
     dst.paste(im2, (0, im1.height))
     return dst
 
-def color_correction(part,part_x,part_y,pic):
+def pic_paste(part,part_x,part_y,pic):
     lst1 = []
     lst2 = []
     for x in range(part_x,part_x+part.size[0]+1):
@@ -142,8 +140,6 @@ if __name__ == '__main__':
 
     angle = 2
 
-    print(ud_lst[0],ud_lst2[0],ud_lst[1],ud_lst2[1])
-
     if ud_lst2[0]*total_width_ud2/(ud_lst[0]*total_width_ud)< 0.9:
         print("上を向いています")
         angle = 0
@@ -161,6 +157,7 @@ if __name__ == '__main__':
     right_eye = Image.open('../img/right_eye.png')
     left_eye = Image.open('../img/left_eye.png')
     mouth = Image.open('../img/mouth.png')
+    shadow = Image.open('../img/shadow.png')
     
     if angle != 2: #上下方向の向きを調整する必要がある場合
         
@@ -169,32 +166,37 @@ if __name__ == '__main__':
             width,height = im[i].size
             if i==angle and angle==0: #上向きの場合
                 im[i] = im[i].resize((width,int(max(0.6,key_ratio*0.8)*height)))
+
                 ratio_nose = 0.15
+                ratio = 1
 
                 right_eye = right_eye.resize((right_eye.size[0],int(max(0.6,key_ratio*0.8)*right_eye.size[1])))
                 left_eye = left_eye.resize((left_eye.size[0],int(max(0.6,key_ratio*0.8)*left_eye.size[1])))
 
             elif i==angle: #下向きの場合
                 im[i] = im[i].resize((width,int(max(0.6,key_ratio)*height)))
+
                 ratio_nose = 0.5
+                ratio = max(0.6,key_ratio)
 
                 right_eye = right_eye.resize((right_eye.size[0],int(max(0.6,key_ratio*0.8)*right_eye.size[1])))
                 left_eye = left_eye.resize((left_eye.size[0],int(max(0.6,key_ratio*0.8)*left_eye.size[1])))
 
-        nose_y = int(im[0].size[1] + int(ratio_nose*im[1].size[1])+nose.size[1]/2)
+        nose_y = int(im[0].size[1] + int(ratio_nose*im[1].size[1])-nose.size[1]/2)
         eye_y = im[0].size[1]+10
-
+        
         dst = get_concat_v(im[0],im[1])
     
     else: #左右の調整だけで良い場合
         dst = im
         nose_y = int(0.75*dst.size[1]-nose.size[1]/2)
         eye_y = int(0.5*dst.size[1])
+        ratio = 1
     
     dis_nose_mouth = 10
-    mouth_y = nose_y + nose.size[1] + dis_nose_mouth
-        
-    
+    mouth_y = int(nose_y + nose.size[1] + dis_nose_mouth*ratio)
+    shadow_y = int(nose_y + 110*ratio)
+
     #左右方向の向きを合わせる
     dst = ImgSplit_ver(dst)
     mouth = ImgSplit_ver(mouth)
@@ -209,8 +211,8 @@ if __name__ == '__main__':
             right_eye = right_eye.resize((int(lr_lst2[min_num_lr2]*right_eye.size[0]),right_eye.size[1]))
 
             nose_x = int(width*lr_lst2[min_num_lr2]-nose.size[0]/2)
-            right_eye_x = int(nose_x-105*lr_lst2[min_num_lr2]-right_eye.size[0]/2)
-            mouth_x = int(nose_x - mouth[i].size[0])
+            right_eye_x = int(nose_x-100*lr_lst2[min_num_lr2]-right_eye.size[0]/2)
+            mouth_x = int(nose_x + nose.size[0]/2 - mouth[i].size[0])
         else:
             dst[i] = dst[i].resize((int(width*lr_lst2[abs(1-min_num_lr2)]),height))
             mouth[i] = mouth[i].resize((int(width2*lr_lst2[abs(1-min_num_lr2)]),height2))
@@ -218,13 +220,15 @@ if __name__ == '__main__':
     dst = get_concat_h(dst[0],dst[1])
     mouth = get_concat_h(mouth[0],mouth[1])
 
-    left_eye_x = int(nose_x + 120*lr_lst2[abs(1-min_num_lr2)] - left_eye.size[0]/2)
+    left_eye_x = int(nose_x + 60)
+    shadow_x = int(nose_x + nose.size[0]/2 - shadow.size[0]/2)
 
     #パーツ同士の重なりに注意しながら貼り付け
-    dst = color_correction(nose,nose_x,nose_y,dst)
-    dst = color_correction(left_eye,left_eye_x,eye_y,dst)
-    dst = color_correction(right_eye,right_eye_x,eye_y,dst)
-    dst = color_correction(mouth,mouth_x,mouth_y,dst)
+    dst = pic_paste(nose,nose_x,nose_y,dst)
+    dst = pic_paste(left_eye,left_eye_x,eye_y,dst)
+    dst = pic_paste(right_eye,right_eye_x,eye_y,dst)
+    dst = pic_paste(mouth,mouth_x,mouth_y,dst)
+    dst.paste(shadow,(shadow_x,shadow_y))
 
     if min_num_lr2==1 and lr_lst[1]<0.85: #顔が左向きの場合
         dst = ImageOps.mirror(dst)
