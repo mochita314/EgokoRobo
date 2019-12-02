@@ -124,7 +124,6 @@ for epo in range(args.epoch):
         #print(y.data)
         #print(t.data)
 
-
     # 検証
     # ミニバッチ入力データ
     x, t = mini_batch_data(test_data)

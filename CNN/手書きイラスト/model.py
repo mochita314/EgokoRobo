@@ -40,10 +40,17 @@ class Mychain(Chain):
         h4 = F.relu(self.l4(h3_reshape))
         return self.l5(h4)
 
+def get_square(parts):
+    # 鼻を中心として画像を切り抜く形として正規化
+    center = (parts["n1"]+parts["n2"])//2
+    center_of_eyes = (parts["le1"]+parts["re1"])//2
+    length = math.sqrt((center[0]-center_of_eyes[0])**2 + (center[1]-center_of_eyes[1])**2)*3
+    return (center[0]-length,center[1]-length,center[0]+length,center[1]+length)
+
 def load_image(xmlfile):
-    #データを読み込んで、パーツの位置の座標を辞書型で格納する
+    # データを読み込んで、パーツの位置の座標を辞書型で格納する
     
-    #XMLファイルを解析
+    # XMLファイルを解析
     tree = ET.parse(xmlfile)
     root = tree.getroot()
     images = root.find("images")
@@ -51,16 +58,27 @@ def load_image(xmlfile):
     for image in list(images):
         img = ImageOps.invert(Image.open(image.get("file")).convert('L'))
         for box in list(image):
-            #パーツの座標を格納する辞書
+            # パーツの座標を格納する辞書
             parts = {}
             for part in list(box):
                 parts[part.get("name")] = [int(part.get("x")), int(part.get("y")), 1]
             
+            notfound = False
+            for label in ("re01", "re02", "re03", "re04", "le01", "le02", "le03", "le04", "n01", "n02", "m01", "m02"):
+                if label not in parts:
+                    print("not exist {} in box:{}, file:{}".format(label, ibox+1, image.get("file")))
+                    notfound = True
+            if notfound:
+                continue
+            
+            
     #多分ここら辺でデータの正規化とそれに伴ったランドマークの座標変換的なことをする
-    #何で中心を正規化する必要があるのか？
+    
 
 def data_augmentation():
     #データオーギュメンテーションをする。
+    #回転はひとまず必要ない
+    
 
 
 

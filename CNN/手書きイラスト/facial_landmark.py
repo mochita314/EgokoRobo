@@ -146,7 +146,6 @@ def data_augmentation(data):
     # 変換されたデータを返す
     return {'img' : dst, 'parts' : parts_converted}
 
-
 def show_img_and_landmark(img, parts):
     plt.imshow(1.0 - img, cmap='gray')
     for t in parts[0:3]:
