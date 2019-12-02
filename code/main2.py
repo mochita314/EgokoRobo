@@ -1,4 +1,4 @@
-# -*- まずは自分が用意した特定のイラストで実装したコード -*-
+# -*- イラストから顔およびパーツを検出した上でそのイラストを回転させることを目指す -*-
 
 import cv2
 import dlib
@@ -9,6 +9,10 @@ import sys
 
 from datetime import datetime
 from time import sleep
+
+def input_img():
+    #元画像のパーツを検出し、それぞれ画像を取り出すと共に、パーツ間の距離を検出
+    return 0
 
 # 画像を縦半分で2つに分割する
 def ImgSplit_ver(im):
@@ -68,12 +72,14 @@ def detect_face_angle():
 
     for d in dets:
         parts=predictor(frame,d).parts()
+    
+    try:
+        lr_lst.append(parts[29].x - parts[2].x)
+        lr_lst.append(parts[14].x - parts[29].x)
 
-    lr_lst.append(parts[29].x - parts[2].x)
-    lr_lst.append(parts[14].x - parts[29].x)
-
-    ud_lst.append(parts[30].y - parts[27].y)
-    ud_lst.append(parts[8].y - parts[30].y)
+        ud_lst.append(parts[30].y - parts[27].y)
+        ud_lst.append(parts[8].y - parts[30].y)
+    except:
 
     if lr_lst[0] < lr_lst[1]:
         min_num_lr = 0 #右向き
@@ -150,7 +156,7 @@ if __name__ == '__main__':
         key_ratio = ud_lst2[1]*total_width_ud2/(ud_lst[1]*total_width_ud)
 
     #ベースとなる輪郭
-    im = Image.open('../img/face.jpg')
+    im = Image.open('../img/face.png')
 
     #配置するパーツ
     nose = Image.open('../img/nose.png')
