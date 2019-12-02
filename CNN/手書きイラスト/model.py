@@ -1,5 +1,10 @@
 #!/usr/bin/python
 
+"""
+https://github.com/TadaoYamaoka/gochiusa
+のコードを参考にさせていただきながら書いています
+"""
+
 import numpy as np
 import chainer
 import chainer.functions as F
@@ -51,7 +56,15 @@ def load_image(xmlfile):
             for part in list(box):
                 parts[part.get("name")] = [int(part.get("x")), int(part.get("y")), 1]
             
-    #多分ここら辺でデータの正規化と
+    #多分ここら辺でデータの正規化とそれに伴ったランドマークの座標変換的なことをする
+    #何で中心を正規化する必要があるのか？
+
+def data_augmentation():
+    #データオーギュメンテーションをする。
+
+
+
+
 
 
 
