@@ -2,7 +2,7 @@
 
 """
 https://github.com/TadaoYamaoka/gochiusa
-のコードを参考にさせていただきながら書いています
+のコードをもとに書いています
 """
 
 import numpy as np
@@ -41,21 +41,21 @@ class Mychain(Chain):
         return self.l5(h4)
 
 def get_square(parts):
-    # 鼻を中心として画像を切り抜く形として正規化
+    # 鼻が中心にきて、かつ一辺の長さが両目の中心⇆鼻間の距離の６倍の正方形を取り出す
     center = (parts["n1"]+parts["n2"])//2
     center_of_eyes = (parts["le1"]+parts["re1"])//2
     length = math.sqrt((center[0]-center_of_eyes[0])**2 + (center[1]-center_of_eyes[1])**2)*3
     return (center[0]-length,center[1]-length,center[0]+length,center[1]+length)
 
 def load_image(xmlfile):
-    # データを読み込んで、パーツの位置の座標を辞書型で格納する
-    
-    # XMLファイルを解析
+    # データを読み込んで、パーツの位置の座標を格納する
+
     tree = ET.parse(xmlfile)
     root = tree.getroot()
     images = root.find("images")
 
     for image in list(images):
+        # グレースケールに変換
         img = ImageOps.invert(Image.open(image.get("file")).convert('L'))
         for box in list(image):
             # パーツの座標を格納する辞書
@@ -70,9 +70,12 @@ def load_image(xmlfile):
                     notfound = True
             if notfound:
                 continue
-            
-            
-    #多分ここら辺でデータの正規化とそれに伴ったランドマークの座標変換的なことをする
+            cropped_img = np.array(img.crop(get_square(parts)),dtype=np.float32) / 256.0
+
+            for part in parts.values():
+
+
+
     
 
 def data_augmentation():

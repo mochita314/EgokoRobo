@@ -3,6 +3,7 @@
 import cv2
 import dlib
 import os
+import numpy as np
 
 from PIL import Image, ImageOps
 import sys
@@ -80,6 +81,8 @@ def detect_face_angle():
         ud_lst.append(parts[30].y - parts[27].y)
         ud_lst.append(parts[8].y - parts[30].y)
     except:
+        print("no face")
+        exit()
 
     if lr_lst[0] < lr_lst[1]:
         min_num_lr = 0 #右向き
@@ -133,6 +136,32 @@ def pic_paste(part,part_x,part_y,pic):
         if sum(lst1[i]) < sum(lst2[i]): #黒だったのに白になってしまった場合
             pic.putpixel((lst1[i][0],lst1[i][1]),(lst1[i][2],lst1[i][3],lst1[i][4],0))
     
+    return pic
+
+def np_pic_paste(part,part_x,part_y,pic):
+    arr1 = np.array([])
+    arr2 = np.array([])
+    for x in range(part_x,part_x+part.size[0]+1):
+        for y in range(part_y,part_y+part.size[1]+1):
+            r,g,b = pic.convert('RGB').getpixel((x,y))
+            arr1 = np.append(arr1,[x,y,r,g,b])
+    pic.paste(part,(part_x,part_y))
+    arr1 = arr1.astype('int64')
+    num=0
+    for x in range(part_x,part_x+part.size[0]+1):
+        for y in range(part_y,part_y+part.size[1]+1):
+            r2,g2,b2 = pic.convert('RGB').getpixel((x,y))
+            arr2 = np.append(arr2,[x,y,r2,g2,b2])
+            if np.sum(arr1[5*num:5*num+5]) < np.sum(arr2[5*num:5*num+5]):
+                try:
+                    pic.putpixel((arr1[5*num],arr1[5*num+1]),(arr1[5*num+2],arr1[5*num+3],arr1[5*num+4]))
+                except:
+                    print(0)
+            num+=1
+    return pic
+
+def faster_pic_paste(part,part_x,part_y,pic):
+    pic.paste(part,(part_x,part_y))
     return pic
 
 if __name__ == '__main__':
@@ -230,11 +259,16 @@ if __name__ == '__main__':
     shadow_x = int(nose_x + nose.size[0]/2 - shadow.size[0]/2)
 
     #パーツ同士の重なりに注意しながら貼り付け
-    dst = pic_paste(nose,nose_x,nose_y,dst)
-    dst = pic_paste(left_eye,left_eye_x,eye_y,dst)
-    dst = pic_paste(right_eye,right_eye_x,eye_y,dst)
-    dst = pic_paste(mouth,mouth_x,mouth_y,dst)
-    dst.paste(shadow,(shadow_x,shadow_y))
+    dst = faster_pic_paste(nose,nose_x,nose_y,dst)
+    print("nose complete")
+    dst = np_pic_paste(left_eye,left_eye_x,eye_y,dst)
+    print("left eye complete")
+    dst = np_pic_paste(right_eye,right_eye_x,eye_y,dst)
+    print("right eye complete")
+    dst = faster_pic_paste(mouth,mouth_x,mouth_y,dst)
+    print("mouth complete")
+    dst = faster_pic_paste(shadow,shadow_x,shadow_y,dst)
+    print("shadow complete")
 
     if min_num_lr2==1 and lr_lst[1]<0.85: #顔が左向きの場合
         dst = ImageOps.mirror(dst)
