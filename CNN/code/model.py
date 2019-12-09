@@ -33,19 +33,23 @@ class Mychain(Chain):
         )
     
     def __call__(self,x):
-                h1 = F.max_pooling_2d(F.relu(self.l1(x)), 2)
+        h1 = F.max_pooling_2d(F.relu(self.l1(x)), 2)
         h2 = F.max_pooling_2d(F.relu(self.l2(h1)), 2)
         h3 = F.relu(self.l3(h2))
         h3_reshape = F.reshape(h3, (len(h3.data), int(h3.data.size / len(h3.data))))
         h4 = F.relu(self.l4(h3_reshape))
         return self.l5(h4)
 
-def get_square(parts):
-    # 鼻が中心にきて、かつ一辺の長さが両目の中心⇆鼻間の距離の６倍の正方形を取り出す
+def get_center_and_length(parts):
     center = (parts["n1"]+parts["n2"])//2
-    center_of_eyes = (parts["le1"]+parts["re1"])//2
-    length = math.sqrt((center[0]-center_of_eyes[0])**2 + (center[1]-center_of_eyes[1])**2)*3
-    return (center[0]-length,center[1]-length,center[0]+length,center[1]+length)
+    length = math.sqrt((parts["le2"][0]-parts["re2"][0])**2 + (parts["le2"][1]-parts["re2"][1])**2)*1.5
+    return center,length
+
+def get_square(center,length):
+    # 鼻が中心にきて、かつ一辺の長さが両目端間の距離の1.5倍の正方形の
+    # 左上の座標(x_1,y_1)と右下の座標(x_2,y_2)を取り出す
+    return (center[0]-length//2,center[1]-length//2,center[0]+length//2,center[1]+length//2)
+    # x_1, y_1, x_2, y_2
 
 def load_image(xmlfile):
     # データを読み込んで、パーツの位置の座標を格納する
@@ -64,23 +68,95 @@ def load_image(xmlfile):
                 parts[part.get("name")] = [int(part.get("x")), int(part.get("y")), 1]
             
             notfound = False
-            for label in ("re01", "re02", "re03", "re04", "le01", "le02", "le03", "le04", "n01", "n02", "m01", "m02"):
+            for label in ("re1", "re2", "re3", "re4", "le1", "le2", "le3", "le4", "n1", "n2", "m1", "m2"):
                 if label not in parts:
                     print("not exist {} in box:{}, file:{}".format(label, ibox+1, image.get("file")))
                     notfound = True
             if notfound:
                 continue
-            cropped_img = np.array(img.crop(get_square(parts)),dtype=np.float32) / 256.0
-
+            
+            #正規化のために切り出す正方形の中心の座標と一辺の長さを取得
+            center,length = get_center_and_length(parts)
+            #取得した中心座標と辺の長さで画像を切り取る
+            cropped_img = np.array(img.crop(get_square(center,length)),dtype=np.float32) / 256.0
+            
+            #切り取った正方形に合わせてランドマークの座標変換
             for part in parts.values():
+                part[0] -= center[0]-length
+                part[1] -= center[1]-length
+            
+            data.append({'img': cropped_img, 'parts' : parts})
 
+def data_augmentation(data):
+    img = data['img']
+    parts = data['parts']
 
+    width = img.shape[1]
+    height = img.shape[0]
 
-    
+    center = (width / 2, height / 2)
+    #shapeは(高さ、幅、色)らしい
 
-def data_augmentation():
-    #データオーギュメンテーションをする。
-    #回転はひとまず必要ない
+    dx = parts["re1"][0] - parts["le1"][0]
+    dy = - parts["re1"][1] + parts["le1"][1]
+    angle0 = math.degrees(math.atan(dy / dx))
+    #ここが何しているのかいまいちよくわからない
+
+    # 2/3の範囲を100*100にする
+    scale0 = 100.0 / (width * 2.0 / 3.0)
+
+    # ランダムに変形を加える
+    angle = random.uniform(-45, 45) - angle0
+    scale = scale0 * random.uniform(0.9, 1.1)
+
+    # 変形後の原点
+    #x0 = width / 3.0 * scale
+
+    # アフィン変換
+    #  回転、拡大の後に、回転の中心が(50, 50)になるように平行移動
+    #  平行移動にランダムな値を加える
+    matrix = cv2.getRotationMatrix2D(center, angle, scale) + np.array([[0, 0, -center[0] + 50 + random.uniform(-3, 3)], [0, 0, -center[1] + 50 + random.uniform(-3, 3)]])
+    dst = cv2.warpAffine(img, matrix, (100, 100))
+
+    # ランドマーク座標をnumpyの配列に変換
+    parts_np = np.array([
+        parts["n1"], parts["n2"],
+        parts["le1"], parts["le2"], parts["le3"], parts["le4"],
+        parts["re1"], parts["re2"], parts["re3"], parts["re4"],
+        parts["m1"], parts["m2"]
+        ], dtype=np.float32)
+
+    # ランドマークの座標変換
+    parts_converted = parts_np.dot(matrix.T) / 100.0
+
+    # ランダムに反転
+    if random.randint(0, 1) == 1:
+        dst = cv2.flip(dst, 1)
+        for i in range(len(parts_converted)):
+            parts_converted[i][0] = 1.0 - parts_converted[i][0]
+
+        parts_converted = np.array([
+            parts_converted[2], parts_converted[1], parts_converted[0], # C
+            parts_converted[8], parts_converted[7], parts_converted[9], parts_converted[10], # R -> L
+            parts_converted[4], parts_converted[3], parts_converted[5], parts_converted[6], # L -> R
+            parts_converted[12], parts_converted[11], parts_converted[13], parts_converted[14] # M
+            ], dtype=np.float32)
+
+    # 変換されたデータを返す
+    return {'img' : dst, 'parts' : parts_converted}
+
+def show_img_and_landmark(img, parts):
+    plt.imshow(1.0 - img, cmap='gray')
+    for t in parts[0:3]:
+        plt.plot(t[0]*100, t[1]*100, 'or')
+    for t in parts[3:7]:
+        plt.plot(t[0]*100, t[1]*100, 'og')
+    for t in parts[7:11]:
+        plt.plot(t[0]*100, t[1]*100, 'ob')
+    for t in parts[11:15]:
+        plt.plot(t[0]*100, t[1]*100, 'oy')
+    plt.axis([0, 100, 100, 0])
+    plt.show()
     
 
 
