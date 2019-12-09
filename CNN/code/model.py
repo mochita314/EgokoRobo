@@ -63,13 +63,20 @@ def get_square(center,length):
 def load_image(xmlfile,data):
     # データを読み込んで、パーツの位置の座標を格納する
 
-    tree = ET.parse(xmlfile)
+    try:
+        tree = ET.parse('../学習データ/'+xmlfile)
+    except:
+        tree = ET.parse('../テストデータ/'+xmlfile)
+
     root = tree.getroot()
     images = root.find("images")
 
     for image in list(images):
         # グレースケールに変換
-        img = ImageOps.invert(Image.open(image.get("file")).convert('L'))
+        try:
+            img = ImageOps.invert(Image.open('../学習データ/'+image.get("file")).convert('L'))
+        except:
+            img = ImageOps.invert(Image.open('../テストデータ/'+image.get("file")).convert('L'))
         for box in list(image):
             # パーツの座標を格納する辞書
             parts = {}

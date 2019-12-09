@@ -1,4 +1,10 @@
 #!/usr/bin/python
+
+"""
+https://github.com/TadaoYamaoka/gochiusa
+のコードをもとに書いています
+"""
+
 import numpy as np
 import chainer
 from chainer import cuda, Function, Variable
@@ -7,7 +13,7 @@ from chainer import Link, Chain
 import chainer.functions as F
 import chainer.links as L
 
-from xml.etree.ElementTree import *
+import xml.etree.ElementTree as ET
 import os
 from PIL import Image
 from PIL import ImageOps
@@ -111,9 +117,9 @@ def mini_batch_data(train_data):
 def save_model(sufix = ""):
     # Save the model and the optimizer
     print('save the model')
-    serializers.save_npz('model' + sufix, model)
+    serializers.save_npz('../model/model' + sufix, model)
     print('save the optimizer')
-    serializers.save_npz('state' + sufix, optimizer)
+    serializers.save_npz('../model/state' + sufix, optimizer)
 
 print("{}, start training".format(datetime.now()))
 
