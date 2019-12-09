@@ -20,7 +20,7 @@ import random
 import cv2
 from matplotlib import pylab as plt
 
-from facial_landmark import *
+from model import *
 
 parser = argparse.ArgumentParser(description='Train facial landmark')
 parser.add_argument('xmlfile', type=str, help='xmlfile created by imglab tool')
@@ -35,7 +35,7 @@ args = parser.parse_args()
 
 model = MyChain()
 
-model.to_gpu()
+#model.to_gpu()
 
 #optimizer = optimizers.SGD(lr=args.lr)
 optimizer = optimizers.RMSprop(lr=args.lr)
@@ -53,11 +53,22 @@ if args.resume:
 
 # 訓練データ読み込み
 train_data = []
-read_image_data(args.xmlfile, train_data)
+load_image(args.xmlfile, train_data)
+#print(train_data)
+#print(train_data[0])
+#img = train_data[0]['img']
+#parts = train_data[0]['parts']
+#parts_np = np.array([
+   # parts["re1"], parts["re2"], parts["re3"],parts["re4"],
+   # parts["le1"], parts["le2"], parts["le3"], parts["le4"],
+  #  parts["n1"], parts["n2"], 
+  #  parts["m1"], parts["m2"]
+  #  ], dtype=np.float32)
+#show_img_and_landmark(img,parts_np)
 
 # テストデータ読み込み
 test_data = []
-read_image_data(args.testfile, test_data)
+load_image(args.testfile, test_data)
 
 #import matplotlib.pyplot as plt
 #data = train_data[0]
@@ -82,13 +93,17 @@ def mini_batch_data(train_data):
 
         img_data.append(data['img'])
         t_data.append(data['parts'])
+
+        
         # for debug
         #show_img_and_landmark(data['img'], data['parts'])
 
-    x = Variable(cuda.to_gpu(np.array(img_data, dtype=np.float32)))
+    #x = Variable(cuda.to_gpu(np.array(img_data, dtype=np.float32)))
+    x = Variable(np.array(img_data, dtype=np.float32))
     x = F.reshape(x, (args.batchsize, 1, imgsize, imgsize))
 
-    t = Variable(cuda.to_gpu(np.array(t_data, dtype=np.float32)))
+    #t = Variable(cuda.to_gpu(np.array(t_data, dtype=np.float32)))
+    t = Variable(np.array(t_data, dtype=np.float32))
     t = F.reshape(t, (args.batchsize, landmark*2))
 
     return x, t
@@ -140,4 +155,4 @@ for epo in range(args.epoch):
         save_model(str(epo+1))
 
     # for debug
-    show_img_and_landmark(cuda.to_cpu(x.data)[0][0], cuda.to_cpu(y.data)[0].reshape((landmark,2)))
+    # show_img_and_landmark(cuda.to_cpu(x.data)[0][0], cuda.to_cpu(y.data)[0].reshape((landmark,2)))

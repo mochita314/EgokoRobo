@@ -1,0 +1,263 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<?xml-stylesheet type='text/xsl' href='image_metadata_stylesheet.xsl'?>
+<dataset>
+<name>imglab dataset</name>
+<comment>Created by imglab tool.</comment>
+<images>
+  <image file='t01.jpg'>
+    <box top='19' left='15' width='522' height='548'>
+      <part name='le1' x='314' y='316'/>
+      <part name='le2' x='417' y='321'/>
+      <part name='le3' x='370' y='304'/>
+      <part name='le4' x='373' y='359'/>
+      <part name='m1' x='231' y='455'/>
+      <part name='m2' x='341' y='451'/>
+      <part name='n1' x='275' y='395'/>
+      <part name='n2' x='283' y='422'/>
+      <part name='re1' x='210' y='313'/>
+      <part name='re2' x='115' y='329'/>
+      <part name='re3' x='172' y='306'/>
+      <part name='re4' x='161' y='356'/>
+    </box>
+  </image>
+  <image file='t02.jpg'>
+    <box top='15' left='34' width='520' height='575'>
+      <part name='le1' x='355' y='320'/>
+      <part name='le2' x='443' y='360'/>
+      <part name='le3' x='398' y='313'/>
+      <part name='le4' x='413' y='387'/>
+      <part name='m1' x='272' y='463'/>
+      <part name='m2' x='358' y='455'/>
+      <part name='n1' x='302' y='404'/>
+      <part name='n2' x='309' y='426'/>
+      <part name='re1' x='247' y='316'/>
+      <part name='re2' x='164' y='371'/>
+      <part name='re3' x='209' y='306'/>
+      <part name='re4' x='202' y='397'/>
+    </box>
+  </image>
+  <image file='t03.jpg'>
+    <box top='24' left='52' width='485' height='548'>
+      <part name='le1' x='345' y='305'/>
+      <part name='le2' x='418' y='349'/>
+      <part name='le3' x='380' y='300'/>
+      <part name='le4' x='394' y='373'/>
+      <part name='m1' x='248' y='416'/>
+      <part name='m2' x='358' y='424'/>
+      <part name='n1' x='295' y='375'/>
+      <part name='n2' x='296' y='395'/>
+      <part name='re1' x='238' y='286'/>
+      <part name='re2' x='167' y='336'/>
+      <part name='re3' x='206' y='281'/>
+      <part name='re4' x='196' y='359'/>
+    </box>
+  </image>
+  <image file='t04.jpg'>
+    <box top='7' left='35' width='574' height='569'>
+      <part name='le1' x='391' y='330'/>
+      <part name='le2' x='471' y='387'/>
+      <part name='le3' x='433' y='324'/>
+      <part name='le4' x='448' y='411'/>
+      <part name='m1' x='313' y='479'/>
+      <part name='m2' x='385' y='480'/>
+      <part name='n1' x='338' y='428'/>
+      <part name='n2' x='342' y='441'/>
+      <part name='re1' x='275' y='319'/>
+      <part name='re2' x='191' y='375'/>
+      <part name='re3' x='246' y='314'/>
+      <part name='re4' x='222' y='401'/>
+    </box>
+  </image>
+  <image file='t05.jpg'>
+    <box top='19' left='30' width='557' height='546'>
+      <part name='le1' x='364' y='311'/>
+      <part name='le2' x='471' y='341'/>
+      <part name='le3' x='399' y='301'/>
+      <part name='le4' x='426' y='385'/>
+      <part name='m1' x='276' y='445'/>
+      <part name='m2' x='371' y='445'/>
+      <part name='n1' x='315' y='401'/>
+      <part name='n2' x='318' y='420'/>
+      <part name='re1' x='244' y='301'/>
+      <part name='re2' x='156' y='369'/>
+      <part name='re3' x='206' y='295'/>
+      <part name='re4' x='196' y='393'/>
+    </box>
+  </image>
+  <image file='t06.jpg'>
+    <box top='6' left='3' width='566' height='580'>
+      <part name='le1' x='340' y='327'/>
+      <part name='le2' x='427' y='336'/>
+      <part name='le4' x='399' y='395'/>
+      <part name='m1' x='268' y='474'/>
+      <part name='m2' x='323' y='472'/>
+      <part name='n1' x='289' y='424'/>
+      <part name='n2' x='295' y='438'/>
+      <part name='re1' x='216' y='317'/>
+      <part name='re2' x='129' y='369'/>
+      <part name='re3' x='187' y='313'/>
+      <part name='re4' x='170' y='396'/>
+    </box>
+  </image>
+  <image file='t07.jpg'>
+    <box top='10' left='32' width='568' height='563'>
+      <part name='le1' x='359' y='332'/>
+      <part name='le2' x='457' y='353'/>
+      <part name='le3' x='417' y='328'/>
+      <part name='le4' x='423' y='399'/>
+      <part name='m1' x='251' y='457'/>
+      <part name='m2' x='371' y='459'/>
+      <part name='n1' x='303' y='394'/>
+      <part name='n2' x='307' y='437'/>
+      <part name='re1' x='251' y='312'/>
+      <part name='re2' x='156' y='351'/>
+      <part name='re3' x='216' y='307'/>
+      <part name='re4' x='193' y='382'/>
+    </box>
+  </image>
+  <image file='t08.jpg'>
+    <box top='6' left='57' width='583' height='580'>
+      <part name='le1' x='397' y='329'/>
+      <part name='le2' x='500' y='340'/>
+      <part name='le3' x='453' y='324'/>
+      <part name='le4' x='469' y='394'/>
+      <part name='m1' x='315' y='488'/>
+      <part name='m2' x='414' y='485'/>
+      <part name='n1' x='350' y='426'/>
+      <part name='n2' x='356' y='450'/>
+      <part name='re1' x='284' y='326'/>
+      <part name='re2' x='188' y='352'/>
+      <part name='re3' x='249' y='318'/>
+      <part name='re4' x='228' y='398'/>
+    </box>
+  </image>
+  <image file='t09.jpg'>
+    <box top='8' left='67' width='505' height='522'>
+      <part name='le1' x='363' y='310'/>
+      <part name='le2' x='473' y='308'/>
+      <part name='le3' x='428' y='294'/>
+      <part name='le4' x='427' y='341'/>
+      <part name='m1' x='284' y='432'/>
+      <part name='m2' x='398' y='426'/>
+      <part name='n1' x='332' y='385'/>
+      <part name='n2' x='335' y='404'/>
+      <part name='re1' x='269' y='305'/>
+      <part name='re2' x='170' y='337'/>
+      <part name='re3' x='224' y='308'/>
+      <part name='re4' x='223' y='353'/>
+    </box>
+  </image>
+  <image file='t10.jpg'>
+    <box top='23' left='35' width='509' height='516'>
+      <part name='le1' x='329' y='298'/>
+      <part name='le2' x='418' y='306'/>
+      <part name='le3' x='379' y='293'/>
+      <part name='le4' x='387' y='362'/>
+      <part name='m1' x='248' y='437'/>
+      <part name='m2' x='346' y='437'/>
+      <part name='n1' x='286' y='392'/>
+      <part name='n2' x='288' y='408'/>
+      <part name='re1' x='234' y='291'/>
+      <part name='re2' x='139' y='321'/>
+      <part name='re3' x='193' y='286'/>
+      <part name='re4' x='176' y='357'/>
+    </box>
+  </image>
+  <image file='t11.jpg'>
+    <box top='38' left='44' width='547' height='538'>
+      <part name='le1' x='390' y='334'/>
+      <part name='le2' x='485' y='386'/>
+      <part name='le3' x='432' y='326'/>
+      <part name='le4' x='450' y='414'/>
+      <part name='m1' x='294' y='481'/>
+      <part name='m2' x='412' y='485'/>
+      <part name='n1' x='333' y='427'/>
+      <part name='n2' x='355' y='450'/>
+      <part name='re1' x='272' y='316'/>
+      <part name='re2' x='192' y='389'/>
+      <part name='re3' x='231' y='317'/>
+      <part name='re4' x='221' y='414'/>
+    </box>
+  </image>
+  <image file='t12.jpg'>
+    <box top='5' left='11' width='624' height='581'>
+      <part name='le1' x='359' y='330'/>
+      <part name='le2' x='465' y='338'/>
+      <part name='le3' x='421' y='327'/>
+      <part name='le4' x='426' y='407'/>
+      <part name='m1' x='260' y='490'/>
+      <part name='m2' x='373' y='478'/>
+      <part name='n1' x='304' y='438'/>
+      <part name='n2' x='318' y='457'/>
+      <part name='re1' x='255' y='320'/>
+      <part name='re2' x='145' y='347'/>
+      <part name='re3' x='215' y='319'/>
+      <part name='re4' x='192' y='403'/>
+    </box>
+  </image>
+  <image file='t13.jpg'>
+    <box top='31' left='36' width='543' height='533'>
+      <part name='le1' x='373' y='329'/>
+      <part name='le2' x='456' y='343'/>
+      <part name='le3' x='403' y='321'/>
+      <part name='le4' x='418' y='410'/>
+      <part name='m1' x='256' y='458'/>
+      <part name='m2' x='352' y='466'/>
+      <part name='n1' x='306' y='421'/>
+      <part name='n2' x='320' y='433'/>
+      <part name='re1' x='264' y='312'/>
+      <part name='re2' x='183' y='322'/>
+      <part name='re3' x='229' y='311'/>
+      <part name='re4' x='211' y='393'/>
+    </box>
+  </image>
+  <image file='t14.jpg'>
+    <box top='38' left='62' width='495' height='531'>
+      <part name='le1' x='366' y='330'/>
+      <part name='le2' x='456' y='352'/>
+      <part name='le3' x='395' y='327'/>
+      <part name='le4' x='413' y='412'/>
+      <part name='m1' x='272' y='480'/>
+      <part name='m2' x='365' y='475'/>
+      <part name='n1' x='306' y='424'/>
+      <part name='n2' x='321' y='443'/>
+      <part name='re1' x='253' y='317'/>
+      <part name='re2' x='154' y='348'/>
+      <part name='re3' x='214' y='315'/>
+      <part name='re4' x='206' y='398'/>
+    </box>
+  </image>
+  <image file='t15.jpg'>
+    <box top='16' left='40' width='522' height='510'>
+      <part name='le1' x='336' y='297'/>
+      <part name='le2' x='417' y='312'/>
+      <part name='le3' x='370' y='297'/>
+      <part name='le4' x='384' y='364'/>
+      <part name='m1' x='245' y='429'/>
+      <part name='m2' x='348' y='428'/>
+      <part name='n1' x='288' y='394'/>
+      <part name='n2' x='287' y='408'/>
+      <part name='re1' x='234' y='296'/>
+      <part name='re2' x='158' y='326'/>
+      <part name='re3' x='209' y='299'/>
+      <part name='re4' x='200' y='366'/>
+    </box>
+  </image>
+  <image file='t16.jpg'>
+    <box top='11' left='33' width='551' height='555'>
+      <part name='le1' x='358' y='318'/>
+      <part name='le2' x='444' y='374'/>
+      <part name='le3' x='401' y='309'/>
+      <part name='le4' x='415' y='391'/>
+      <part name='m1' x='284' y='461'/>
+      <part name='m2' x='378' y='457'/>
+      <part name='n1' x='320' y='427'/>
+      <part name='n2' x='322' y='437'/>
+      <part name='re1' x='277' y='319'/>
+      <part name='re2' x='194' y='379'/>
+      <part name='re3' x='240' y='309'/>
+      <part name='re4' x='237' y='404'/>
+    </box>
+  </image>
+</images>
+</dataset>

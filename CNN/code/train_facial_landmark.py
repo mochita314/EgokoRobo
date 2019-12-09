@@ -54,10 +54,12 @@ if args.resume:
 # 訓練データ読み込み
 train_data = []
 read_image_data(args.xmlfile, train_data)
+print(train_data)
 
 # テストデータ読み込み
 test_data = []
 read_image_data(args.testfile, test_data)
+
 
 #import matplotlib.pyplot as plt
 #data = train_data[0]
@@ -67,11 +69,11 @@ read_image_data(args.testfile, test_data)
 #plt.imshow(img, 'gray')
 #plt.show()
 
-#for i in range(len(train_data)):
-#    data = data_augmentation(train_data[i])
-#
-#    print(i)
-#    print(data['parts'])
+for i in range(len(train_data)):
+    data = data_augmentation(train_data[i])
+
+    print(i)
+    print(data['parts'])
 
 def mini_batch_data(train_data):
     img_data = []
