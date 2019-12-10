@@ -64,9 +64,9 @@ def load_image(xmlfile,data):
     # データを読み込んで、パーツの位置の座標を格納する
 
     try:
-        tree = ET.parse('../学習データ/'+xmlfile)
+        tree = ET.parse('../train_data/'+xmlfile)
     except:
-        tree = ET.parse('../テストデータ/'+xmlfile)
+        tree = ET.parse('../test_data/'+xmlfile)
 
     root = tree.getroot()
     images = root.find("images")
@@ -74,9 +74,9 @@ def load_image(xmlfile,data):
     for image in list(images):
         # グレースケールに変換
         try:
-            img = ImageOps.invert(Image.open('../学習データ/'+image.get("file")).convert('L'))
+            img = ImageOps.invert(Image.open('../train_data/'+image.get("file")).convert('L'))
         except:
-            img = ImageOps.invert(Image.open('../テストデータ/'+image.get("file")).convert('L'))
+            img = ImageOps.invert(Image.open('../test_data/'+image.get("file")).convert('L'))
 
         for box in list(image):
             # パーツの座標を格納する辞書
@@ -179,14 +179,3 @@ def show_img_and_landmark(img, parts):
         plt.plot(t[0]*100, t[1]*100, 'oy')
     plt.axis([0, 100, 100, 0])
     plt.show()
-    
-
-
-
-
-
-
-
-
-
-
