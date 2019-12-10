@@ -496,6 +496,7 @@
       <part name='n2' x='297' y='445'/>
       <part name='re1' x='235' y='325'/>
       <part name='re2' x='155' y='378'/>
+      <part name='re3' x='198' y='321'/>
       <part name='re4' x='195' y='420'/>
     </box>
   </image>
@@ -893,7 +894,7 @@
       <part name='m2' x='296' y='470'/>
       <part name='n1' x='266' y='432'/>
       <part name='re1' x='217' y='325'/>
-      <part name='re2' x='269' y='444'/>
+      <part name='re2' x='135' y='384'/>
       <part name='re3' x='175' y='322'/>
       <part name='re4' x='170' y='416'/>
     </box>

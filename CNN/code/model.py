@@ -77,6 +77,7 @@ def load_image(xmlfile,data):
             img = ImageOps.invert(Image.open('../学習データ/'+image.get("file")).convert('L'))
         except:
             img = ImageOps.invert(Image.open('../テストデータ/'+image.get("file")).convert('L'))
+
         for box in list(image):
             # パーツの座標を格納する辞書
             parts = {}
@@ -91,7 +92,7 @@ def load_image(xmlfile,data):
             if notfound:
                 continue
             
-            #正規化のために切り出す正方形の中心の座標と一辺の長さを取得
+            #正規化のために切り出す正方形の中心の座標と一辺の長さの半分を取得
             center,length = get_center_and_length(parts)
             #取得した中心座標と辺の長さで画像を切り取る
             cropped_img = np.array(img.crop(get_square(center,length)),dtype=np.float32) / 256.0
@@ -144,7 +145,6 @@ def data_augmentation(data):
     parts_converted = parts_np.dot(matrix.T) / 100.0
 
     # ランダムに反転
-    
     if random.randint(0, 1) == 1:
         #print("yes")
         dst = cv2.flip(dst, 1)
@@ -158,19 +158,23 @@ def data_augmentation(data):
             parts_converted[11], parts_converted[10],# M
             ], dtype=np.float32)
 
-
     # 変換されたデータを返す
     return {'img' : dst, 'parts' : parts_converted}
 
 def show_img_and_landmark(img, parts):
     plt.imshow(1.0 - img, cmap='gray')
-    print(parts)
+    #print(parts)
+
+    #右目は赤
     for t in parts[0:4]:
         plt.plot(t[0]*100, t[1]*100, 'or')
+    #左目は緑
     for t in parts[4:8]:
         plt.plot(t[0]*100, t[1]*100, 'og')
+    #鼻は青
     for t in parts[8:10]:
         plt.plot(t[0]*100, t[1]*100, 'ob')
+    #口は黄色
     for t in parts[10:12]:
         plt.plot(t[0]*100, t[1]*100, 'oy')
     plt.axis([0, 100, 100, 0])

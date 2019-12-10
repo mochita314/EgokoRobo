@@ -34,7 +34,7 @@ parser.add_argument('--iteration', '-i', type=int, default=1, help='Number of it
 args = parser.parse_args()
 
 model = MyChain()
-serializers.load_npz(args.model, model)
+serializers.load_npz('../model/'+args.model, model)
 
 # テストデータ読み込み
 test_data = []

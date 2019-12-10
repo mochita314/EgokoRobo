@@ -100,7 +100,6 @@ def mini_batch_data(train_data):
         img_data.append(data['img'])
         t_data.append(data['parts'])
 
-        
         # for debug
         #show_img_and_landmark(data['img'], data['parts'])
 

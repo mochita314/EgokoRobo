@@ -88,6 +88,7 @@
     <box top='6' left='3' width='566' height='580'>
       <part name='le1' x='340' y='327'/>
       <part name='le2' x='427' y='336'/>
+      <part name='le3' x='382' y='319'/>
       <part name='le4' x='399' y='395'/>
       <part name='m1' x='268' y='474'/>
       <part name='m2' x='323' y='472'/>
