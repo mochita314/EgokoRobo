@@ -1,4 +1,4 @@
-/img
-/img2
+/img/*.png
+/img2/*.jpg
 /CNN/学習データ/*.jpg
 /CNN/テストデータ/*.jpg
