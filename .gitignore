@@ -1,4 +1,4 @@
-/img/*.png
-/img2/*.jpg
-/CNN/学習データ/*.jpg
-/CNN/テストデータ/*.jpg
+/input_img/*.png
+/output_img/*.jpg
+/CNN/train_data/*.jpg
+/CNN/test_data/*.jpg
