@@ -192,7 +192,11 @@ if __name__ == '__main__':
     right_eye = Image.open('../input_img/right_eye.png')
     left_eye = Image.open('../input_img/left_eye.png')
     mouth = Image.open('../input_img/mouth.png')
-    shadow = Image.open('../input_img/shadow.png')
+    try:
+        shadow = Image.open('../input_img/shadow.png')
+    except:
+        print("no shadow")
+        shadow = 1
     
     if angle != 2: #上下方向の向きを調整する必要がある場合
         
@@ -267,8 +271,9 @@ if __name__ == '__main__':
     print("right eye complete")
     dst = faster_pic_paste(mouth,mouth_x,mouth_y,dst)
     print("mouth complete")
-    dst = faster_pic_paste(shadow,shadow_x,shadow_y,dst)
-    print("shadow complete")
+    if shadow != 1:
+        dst = faster_pic_paste(shadow,shadow_x,shadow_y,dst)
+        print("shadow complete")
 
     if min_num_lr2==1 and lr_lst[1]<0.85: #顔が左向きの場合
         dst = ImageOps.mirror(dst)
