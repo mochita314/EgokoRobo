@@ -1,3 +1,5 @@
+#!/usr/bin/python
+
 import numpy as np
 import chainer
 from chainer import Function, Variable
@@ -38,14 +40,22 @@ img = np.array(img,dtype=np.float32) / 256.0
 
 data.append({'img':img})
 
-def data_augumentation_without_t(data):
-    img = data['img']
-    return {'img':img}
-
 def mini_batch_data_without_t(input_data):
     img_data = []
     for j in range(args.batchsize):
-        data = data_augumentation_without_t(data)
+        img_data.append(input_data['img'])
+    x = Variable(np.array(img_data, dtype=np.float32))
+    x = F.reshape(x, (args.batchsize, 1, imgsize, imgsize))
+    return x
+
+x = mini_batch_data_without_t(img)
+y = model(x)
+
+for i in range(args.batchsize):
+    show_img_and_landmark(x.data[i][0],y.data[i].reshape((landmark,2)))
+
+
+
 
 
 

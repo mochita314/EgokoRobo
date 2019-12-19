@@ -60,35 +60,10 @@ if args.resume:
 # 訓練データ読み込み
 train_data = []
 load_image(args.xmlfile, train_data)
-#print(train_data)
-#print(train_data[0])
-#img = train_data[0]['img']
-#parts = train_data[0]['parts']
-#parts_np = np.array([
-   # parts["re1"], parts["re2"], parts["re3"],parts["re4"],
-   # parts["le1"], parts["le2"], parts["le3"], parts["le4"],
-  #  parts["n1"], parts["n2"], 
-  #  parts["m1"], parts["m2"]
-  #  ], dtype=np.float32)
-#show_img_and_landmark(img,parts_np)
 
 # テストデータ読み込み
 test_data = []
 load_image(args.testfile, test_data)
-
-#import matplotlib.pyplot as plt
-#data = train_data[0]
-#img = data[0]
-#parts = data[1]
-#print(parts)
-#plt.imshow(img, 'gray')
-#plt.show()
-
-#for i in range(len(train_data)):
-#    data = data_augmentation(train_data[i])
-#
-#    print(i)
-#    print(data['parts'])
 
 def mini_batch_data(train_data):
     img_data = []
