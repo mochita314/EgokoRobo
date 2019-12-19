@@ -44,7 +44,9 @@ img = img.crop((width//2-size//2,height//2-size//2,width//2+size//2,height//2+si
 img = img.resize((100,100))
 img = np.array(img,dtype=np.float32) / 256.0
 
-def 
+# ランドマークの座標情報を持たない画像に前処理をする
+def preprocess(data):
+
 
 def mini_batch_data_without_t(input_data):
     img_data = []
