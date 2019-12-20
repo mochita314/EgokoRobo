@@ -37,6 +37,9 @@ data = []
 # パーツを検出させたい画像の読み込み
 img = ImageOps.invert(Image.open('../test_data/t10.jpg').convert('L'))
 
+# 検出結果に対して、逆正規化を施さないといけない
+# そのやり方を調べて今週末までに実装する
+"""
 width,height = img.size
 size = min(width,height)
 
@@ -73,3 +76,4 @@ x = mini_batch_data_without_t(dst)
 y = model(x)
 
 show_img_and_landmark(x.data[0][0],y.data[0].reshape((landmark,2)))
+"""
