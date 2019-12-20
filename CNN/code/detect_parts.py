@@ -35,18 +35,30 @@ serializers.load_npz('../model/'+args.model, model)
 data = []
 
 # パーツを検出させたい画像の読み込み
-img = ImageOps.invert(Image.open('../test_data/t04.jpg').convert('L'))
+img = ImageOps.invert(Image.open('../test_data/t10.jpg').convert('L'))
 
 width,height = img.size
 size = min(width,height)
 
 img = img.crop((width//2-size//2,height//2-size//2,width//2+size//2,height//2+size//2))
-img = img.resize((100,100))
+
 img = np.array(img,dtype=np.float32) / 256.0
 
 # ランドマークの座標情報を持たない画像に前処理をする
 def preprocess(data):
 
+    width = img.shape[1]
+    height = img.shape[0]
+
+    center = (width//2,height//2)
+    angle = 0
+    scale = 100.0 / width
+
+    matrix = cv2.getRotationMatrix2D(center,angle,scale)+np.array([[0, 0, -center[0] + 50 + random.uniform(-3, 3)], [0, 0, -center[1] + 50 + random.uniform(-3, 3)]])
+    print(matrix)
+    dst = cv2.warpAffine(img,matrix,(100,100))
+
+    return dst
 
 def mini_batch_data_without_t(input_data):
     img_data = []
@@ -56,7 +68,8 @@ def mini_batch_data_without_t(input_data):
     x = F.reshape(x, (args.batchsize, 1, imgsize, imgsize))
     return x
 
-x = mini_batch_data_without_t(img)
+dst = preprocess(img)
+x = mini_batch_data_without_t(dst)
 y = model(x)
 
 show_img_and_landmark(x.data[0][0],y.data[0].reshape((landmark,2)))

@@ -75,6 +75,7 @@ def load_image(xmlfile,data):
         # グレースケールに変換
         try:
             img = ImageOps.invert(Image.open('../train_data/'+image.get("file")).convert('L'))
+            #img.show()
         except:
             img = ImageOps.invert(Image.open('../test_data/'+image.get("file")).convert('L'))
 
@@ -131,6 +132,7 @@ def data_augmentation(data):
     #  回転、拡大の後に、回転の中心が(50, 50)になるように平行移動
     #  平行移動にランダムな値を加える
     matrix = cv2.getRotationMatrix2D(center, angle, scale) + np.array([[0, 0, -center[0] + 50 + random.uniform(-3, 3)], [0, 0, -center[1] + 50 + random.uniform(-3, 3)]])
+    #print(matrix)
     dst = cv2.warpAffine(img, matrix, (100, 100))
 
     # ランドマーク座標をnumpyの配列に変換
@@ -163,8 +165,6 @@ def data_augmentation(data):
 
 def show_img_and_landmark(img, parts):
     plt.imshow(1.0 - img, cmap='gray')
-    #print(parts)
-
     #右目は赤
     for t in parts[0:4]:
         plt.plot(t[0]*100, t[1]*100, 'or')
