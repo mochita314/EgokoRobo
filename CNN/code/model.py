@@ -61,8 +61,8 @@ def get_square(center,length):
     # x_1, y_1, x_2, y_2
 
 def load_image(xmlfile,data):
+    
     # データを読み込んで、パーツの位置の座標を格納する
-
     try:
         tree = ET.parse('../train_data/'+xmlfile)
     except:
