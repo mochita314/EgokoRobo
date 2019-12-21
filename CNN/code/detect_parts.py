@@ -35,7 +35,7 @@ serializers.load_npz('../model/'+args.model, model)
 data = []
 
 # パーツを検出させたい画像の読み込み
-img = ImageOps.invert(Image.open('../test_data/t10.jpg').convert('L'))
+img = ImageOps.invert(Image.open('../test_data/t11.jpg').convert('L'))
 
 """
 鼻を中心として、両目間の距離の1.5倍を一辺の長さとする正方形で切り抜き、
@@ -45,13 +45,19 @@ img = ImageOps.invert(Image.open('../test_data/t10.jpg').convert('L'))
 この作業を行うにはどうしたらよいか？
 
 TODO1:仮の正規化を考えて実装してみる
-"""
+
+IDEA1:下から順にピクセルを辿って言って、白→黒→白→黒→白→黒でヒットした黒こそが鼻なので、
+　　　　そこを中心にして、仮の正規化を行う
+　　　（かなり時間がかかりそうなので渋いが、ひとまずこれで実装してみる）
+
 width,height = img.size
 size = min(width,height)
 
 img = img.crop((width//2-size//2,height//2-size//2,width//2+size//2,height//2+size//2))
 
 img = np.array(img,dtype=np.float32) / 256.0
+
+"""
 
 # ランドマークの座標情報を持たない画像に前処理をする
 def preprocess(data):
