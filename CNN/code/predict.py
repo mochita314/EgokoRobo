@@ -23,7 +23,6 @@ from model import *
 
 """
 https://github.com/TadaoYamaoka/gochiusa
-のコードをもとに書いています
 """
 
 parser = argparse.ArgumentParser(description='Predict facial landmark')
@@ -36,7 +35,7 @@ args = parser.parse_args()
 model = MyChain()
 serializers.load_npz('../model/'+args.model, model)
 
-# テストデータ読み込み
+# 
 test_data = []
 load_image(args.testfile, test_data)
 
@@ -59,10 +58,10 @@ def mini_batch_data(train_data):
     return x, t
 
 for i in range(args.iteration):
-    # 検証
-    # ミニバッチ入力データ
+    # 
+    # 
     x, t = mini_batch_data(test_data)
-    # 順伝播
+    # 
     y = model(x)
     loss = F.mean_squared_error(y, t)
     print("test loss = {}".format(loss.data))

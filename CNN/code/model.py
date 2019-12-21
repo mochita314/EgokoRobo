@@ -121,8 +121,10 @@ def data_augmentation(data):
     # 2/3の範囲を100*100にする
     scale0 = 100.0 / (width * 2.0/ 3.0)
 
+    #scale0 = 100.0 / width
+
     # ランダムに変形を加える
-    angle = random.uniform(-45,45)-angle0
+    angle = random.uniform(-45, 45) - angle0
     scale = scale0 * random.uniform(0.9, 1.1)
 
     # 変形後の原点
@@ -162,6 +164,10 @@ def data_augmentation(data):
 
     # 変換されたデータを返す
     return {'img' : dst, 'parts' : parts_converted}
+
+def inverse_normalize():
+    # 前処理と逆の変換をして画像・検出点の位置を元に戻す
+    return 0
 
 def show_img_and_landmark(img, parts):
     plt.imshow(1.0 - img, cmap='gray')

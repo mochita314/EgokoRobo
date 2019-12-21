@@ -37,8 +37,14 @@ data = []
 # パーツを検出させたい画像の読み込み
 img = ImageOps.invert(Image.open('../test_data/t10.jpg').convert('L'))
 
-# 検出結果に対して、逆正規化を施さないといけない
-# そのやり方を調べて今週末までに実装する
+"""
+鼻を中心として、両目間の距離の1.5倍を一辺の長さとする正方形で切り抜き、
+全体の2/3を100*100に拡大する正規化を施している
+
+ランドマークの情報がない状況で
+この作業を行うにはどうしたらよいか？
+
+TODO1:仮の正規化を考えて実装してみる
 """
 width,height = img.size
 size = min(width,height)
@@ -50,18 +56,7 @@ img = np.array(img,dtype=np.float32) / 256.0
 # ランドマークの座標情報を持たない画像に前処理をする
 def preprocess(data):
 
-    width = img.shape[1]
-    height = img.shape[0]
-
-    center = (width//2,height//2)
-    angle = 0
-    scale = 100.0 / width
-
-    matrix = cv2.getRotationMatrix2D(center,angle,scale)+np.array([[0, 0, -center[0] + 50 + random.uniform(-3, 3)], [0, 0, -center[1] + 50 + random.uniform(-3, 3)]])
-    print(matrix)
-    dst = cv2.warpAffine(img,matrix,(100,100))
-
-    return dst
+    return data
 
 def mini_batch_data_without_t(input_data):
     img_data = []
@@ -76,4 +71,3 @@ x = mini_batch_data_without_t(dst)
 y = model(x)
 
 show_img_and_landmark(x.data[0][0],y.data[0].reshape((landmark,2)))
-"""
