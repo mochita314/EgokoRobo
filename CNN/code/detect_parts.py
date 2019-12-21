@@ -25,6 +25,7 @@ from model import *
 parser = argparse.ArgumentParser(description='Predict facial landmark')
 #parser.add_argument('testfile', type=str, help='testfile created by imglab tool')
 parser.add_argument('model', type=str, help='model file')
+parser.add_argument('shade',type=int,help='the number of shade')
 parser.add_argument('--batchsize', '-b', type=int, default=16, help='Number of images in each mini-batch')
 parser.add_argument('--iteration', '-i', type=int, default=1, help='Number of iteration times')
 args = parser.parse_args()
@@ -32,42 +33,117 @@ args = parser.parse_args()
 model = MyChain()
 serializers.load_npz('../model/'+args.model, model)
 
-data = []
+"""
+TODO1:入力は最終的には手書き画像になるので、それのコントラスト、シャープネスなどの
+　　　 調整を自動化させる
+TODO2:検出したパーツを切り抜いて、それぞれ画像として保存するコードを完成させる
+
+"""
 
 # パーツを検出させたい画像の読み込み
 img = ImageOps.invert(Image.open('../test_data/t11.jpg').convert('L'))
 
-"""
-鼻を中心として、両目間の距離の1.5倍を一辺の長さとする正方形で切り抜き、
-全体の2/3を100*100に拡大する正規化を施している
+# 鼻の位置を検出する
+# ここさえ綺麗にできればうまくいく
+# あとで高速化を試みること
+def detect_nose(img,shade=args.shade):
+    width = img.size[0]
+    height = img.size[1]
 
-ランドマークの情報がない状況で
-この作業を行うにはどうしたらよいか？
+    chin_candidate = list(range(int(width*0.45),int(width*0.55)))
+    
+    # まず顎を検出する
+    for y in reversed(list(range(0,height))):
+        for x in chin_candidate:
+            arr = np.array([])
+            r,g,b = img.convert('RGB').getpixel((x,y))
+            arr = np.append(arr,[r,g,b])
+            if np.sum(arr) > 300: #黒が検出された場合
+                chin = [x,y]
+                break
+        else:
+            continue
+        break
 
-TODO1:仮の正規化を考えて実装してみる
+    print(chin)
 
-IDEA1:下から順にピクセルを辿って言って、白→黒→白→黒→白→黒でヒットした黒こそが鼻なので、
-　　　　そこを中心にして、仮の正規化を行う
-　　　（かなり時間がかかりそうなので渋いが、ひとまずこれで実装してみる）
+    flag = 1
+    num=0
+    for y in reversed(list(range(0,chin[1]))):
+        for x in list(range(chin[0]-10,chin[0]+10)):
+            arr = np.array([])
+            r,g,b = img.convert('RGB').getpixel((x,y))
+            arr = np.append(arr,[r,g,b])
+            if np.sum(arr) > 500: #黒検出
+                if flag == 0:
+                    flag = 1
+                    num+=1
+                    if num==1+shade:
+                        mouth = y
+                        print(mouth)
+                    break
+            else:
+                if x == chin[0]+9: #そのy座標にひとつも黒い点がなかった場合
+                    flag = 0
+                continue
+            break
+    
+    for y in reversed(list(range(0,mouth-8))):
+        for x in list(range(chin[0]-10,chin[0]+10)):
+            arr = np.array([])
+            r,g,b = img.convert('RGB').getpixel((x,y))
+            arr = np.append(arr,[r,g,b])
+            if np.sum(arr) > 500: #黒検出
+                n2 = [x,y]
+                print(n2)
+                break
+        else:
+            continue
+        break
 
-width,height = img.size
-size = min(width,height)
+    return n2
 
-img = img.crop((width//2-size//2,height//2-size//2,width//2+size//2,height//2+size//2))
+# 検出した鼻の位置をもとに、画像に仮の正規化を施す
+def preprocess(img):
 
-img = np.array(img,dtype=np.float32) / 256.0
+    width,height = img.size
 
-"""
+    n2 = detect_nose(img)
 
-# ランドマークの座標情報を持たない画像に前処理をする
-def preprocess(data):
+    center = [n2[0],n2[1]-8]
+    length = int(width * 0.35)
 
-    return data
+    img = np.array(img.crop(get_square(center,length)),dtype=np.float32) / 256.0
+
+    return img
+
+def zoom_and_flip(img):
+
+    # imgはnumpyの配列なので、widthとheightの取得の仕方は先程と異なる
+    width = img.shape[1]
+    height = img.shape[0]
+
+    center = (width/2,height/2)
+
+    angle = 0
+     
+    scale0 = 100.0 / (width * 2.0 / 3.0)
+    scale = scale0 * random.uniform(0.9,1.1)
+
+    matrix = cv2.getRotationMatrix2D(center,angle,scale) + np.array([[0, 0, -center[0] + 50 + random.uniform(-3, 3)], [0, 0, -center[1] + 50 + random.uniform(-3, 3)]])
+    
+    img = cv2.warpAffine(img,matrix,(100,100))
+
+    if random.randint(0,1)==1:
+        img = cv2.flip(img,1)
+    
+    return img
 
 def mini_batch_data_without_t(input_data):
     img_data = []
     for j in range(args.batchsize):
-        img_data.append(input_data)
+        data = zoom_and_flip(input_data)
+        img_data.append(data)
     x = Variable(np.array(img_data, dtype=np.float32))
     x = F.reshape(x, (args.batchsize, 1, imgsize, imgsize))
     return x
@@ -77,3 +153,5 @@ x = mini_batch_data_without_t(dst)
 y = model(x)
 
 show_img_and_landmark(x.data[0][0],y.data[0].reshape((landmark,2)))
+
+# -*- パーツの画像をそれぞれ切り出して保存する機能をこの後に実装する -*- 

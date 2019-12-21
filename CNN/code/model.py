@@ -112,7 +112,7 @@ def data_augmentation(data):
     width = img.shape[1]
     height = img.shape[0]
 
-    center = (width / 2, height / 2)
+    center = (width/2,height/2)
 
     dx = parts["re1"][0] - parts["le1"][0]
     dy = - parts["re1"][1] + parts["le1"][1]
@@ -124,7 +124,8 @@ def data_augmentation(data):
     #scale0 = 100.0 / width
 
     # ランダムに変形を加える
-    angle = random.uniform(-45, 45) - angle0
+    #angle = random.uniform(-45, 45) - angle0
+    angle = 0
     scale = scale0 * random.uniform(0.9, 1.1)
 
     # 変形後の原点
@@ -164,10 +165,6 @@ def data_augmentation(data):
 
     # 変換されたデータを返す
     return {'img' : dst, 'parts' : parts_converted}
-
-def inverse_normalize():
-    # 前処理と逆の変換をして画像・検出点の位置を元に戻す
-    return 0
 
 def show_img_and_landmark(img, parts):
     plt.imshow(1.0 - img, cmap='gray')

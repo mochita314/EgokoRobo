@@ -119,25 +119,6 @@ def get_concat_v(im1, im2):
     dst.paste(im2, (0, im1.height))
     return dst
 
-def pic_paste(part,part_x,part_y,pic):
-    lst1 = []
-    lst2 = []
-    for x in range(part_x,part_x+part.size[0]+1):
-        for y in range(part_y,part_y+part.size[1]+1):
-            r,g,b = pic.convert('RGB').getpixel((x,y))
-            lst1.append([x,y,r,g,b])
-    pic.paste(part,(part_x,part_y))
-    for x in range(part_x,part_x+part.size[0]+1):
-        for y in range(part_y,part_y+part.size[1]+1):
-            r2,g2,b2 = pic.convert('RGB').getpixel((x,y))
-            lst2.append([x,y,r2,g2,b2])
-    
-    for i in range(len(lst1)):
-        if sum(lst1[i]) < sum(lst2[i]): #黒だったのに白になってしまった場合
-            pic.putpixel((lst1[i][0],lst1[i][1]),(lst1[i][2],lst1[i][3],lst1[i][4],0))
-    
-    return pic
-
 def np_pic_paste(part,part_x,part_y,pic):
     arr1 = np.array([])
     arr2 = np.array([])
