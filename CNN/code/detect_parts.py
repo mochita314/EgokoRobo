@@ -33,13 +33,6 @@ args = parser.parse_args()
 model = MyChain()
 serializers.load_npz('../model/'+args.model, model)
 
-"""
-TODO1:入力は最終的には手書き画像になるので、それのコントラスト、シャープネスなどの
-　　　 調整を自動化させる
-TODO2:検出したパーツを切り抜いて、それぞれ画像として保存するコードを完成させる
-
-"""
-
 # 鼻の位置を検出する
 # ここさえ綺麗にできればうまくいく
 # あとで高速化を試みること
