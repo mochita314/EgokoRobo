@@ -35,7 +35,6 @@ args = parser.parse_args()
 model = MyChain()
 serializers.load_npz('../model/'+args.model, model)
 
-# 
 test_data = []
 load_image(args.testfile, test_data)
 
@@ -58,10 +57,7 @@ def mini_batch_data(train_data):
     return x, t
 
 for i in range(args.iteration):
-    # 
-    # 
     x, t = mini_batch_data(test_data)
-    # 
     y = model(x)
     loss = F.mean_squared_error(y, t)
     print("test loss = {}".format(loss.data))
