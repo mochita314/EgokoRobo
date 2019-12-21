@@ -117,9 +117,9 @@ for epo in range(args.epoch):
         sum_loss += float(loss.data)
 
         # for debug
-        #print(loss.data)
-        #print(y.data)
-        #print(t.data)
+        # print(loss.data)
+        # print(y.data)
+        # print(t.data)
 
     # 検証
     # ミニバッチ入力データ
