@@ -146,6 +146,7 @@ def coordinate_transformation(parts):
         parts2[i][0] = int(2*0.7/3*width*parts[i][0] + (0.5-scale1/3)*0.7*width+n2[0]-width*0.35)
         parts2[i][1] = int(2*0.7/3*width*parts[i][1] + (0.5-scale1/3)*0.5*width+n2[1]-width*0.35)
         if flip == 1:
+            parts_converted = [[0 for i in range(2)] for j in range(12)]
             for i in range(len(parts2)):
                 parts_converted[i][0] = width - parts2[i][0]
             parts_lst = [parts2[4],parts2[5],parts2[6],parts2[7],parts2[0],parts2[1],parts2[2],parts2[3],parts2[8],parts2[9],parts2[11],parts2[10]]
