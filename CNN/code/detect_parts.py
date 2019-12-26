@@ -10,8 +10,8 @@ import chainer.links as L
 
 import xml.etree.ElementTree as ET
 import os
-from PIL import Image
-from PIL import ImageOps
+from PIL import Image,ImageOps,ImageDraw
+
 import math
 import sys
 import argparse
@@ -171,6 +171,7 @@ def crop_parts(img,parts):
 
     re1 = [re_center[0]-(re_width//2+10),re_center[1]-(re_height//2+10)]
     re2 = [re_center[0]+(re_width//2+10),re_center[1]+(re_height//2+10)]
+    
     # for debug
     # print('re1:{},re2:{}'.format(re1,re2))
 
@@ -188,11 +189,17 @@ def crop_parts(img,parts):
     nose = img.crop((nose1[0],nose1[1],nose2[0],nose2[1]))
     mouth = img.crop((mouth1[0],mouth1[1],mouth2[0],mouth2[1]))
 
+    draw = ImageDraw.Draw(img)
+    draw.ellipse([(re1[0],re1[1]),(re2[0],re2[1])],fill='white',outline='white')
+    draw.ellipse([(le1[0],le1[1]),(le2[0],le2[1])],fill='white',outline='white')
+    draw.rectangle([(mouth1[0],mouth1[1]),(mouth2[0],mouth2[1])],fill='white',outline='white')
+    draw.rectangle([(nose1[0],nose1[1]),(nose2[0],nose2[1])],fill='white',outline='white')
+    img.save("../../original_img/face.jpg","JPEG")
+
     right_eye.save("../../original_img/right_eye.jpg","JPEG")
     left_eye.save("../../original_img/left_eye.jpg","JPEG")
     nose.save("../../original_img/nose.jpg","JPEG")
     mouth.save("../../original_img/mouth.jpg","JPEG")
-
 
 # パーツを検出させたい画像の読み込み
 original_image = Image.open('../test_data/'+args.image)
@@ -215,5 +222,6 @@ parts_lst = coordinate_transformation(parts)
 # パーツごとに切り抜いた画像の保存
 crop_parts(original_image,parts_lst)
 
+# for debug
 # 検出されたランドマークの表示
 # show_img_and_landmark(x.data[0][0],y.data[0].reshape((landmark,2)))
