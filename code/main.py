@@ -251,6 +251,7 @@ if __name__ == '__main__':
     dst = np_pic_paste(right_eye,right_eye_x,eye_y,dst)
     print("right eye complete")
     dst = faster_pic_paste(mouth,mouth_x,mouth_y,dst)
+    
     print("mouth complete")
     if shadow != 1:
         dst = faster_pic_paste(shadow,shadow_x,shadow_y,dst)

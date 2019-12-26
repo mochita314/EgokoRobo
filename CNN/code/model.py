@@ -1,8 +1,7 @@
 #!/usr/bin/python
 
 """
-https://github.com/TadaoYamaoka/gochiusa
-のコードをもとに書いています
+mainly copied from https://github.com/TadaoYamaoka/gochiusa
 """
 
 import numpy as np
@@ -157,9 +156,9 @@ def data_augmentation(data):
             parts_converted[i][0] = 1.0 - parts_converted[i][0]
 
         parts_converted = np.array([
-            parts_converted[4], parts_converted[5], parts_converted[6], parts_converted[7],# C
+            parts_converted[4], parts_converted[5], parts_converted[6], parts_converted[7],# L -> R
             parts_converted[0], parts_converted[1], parts_converted[2], parts_converted[3], # R -> L
-            parts_converted[8], parts_converted[9],# L -> R
+            parts_converted[9], parts_converted[8],# n
             parts_converted[11], parts_converted[10],# M
             ], dtype=np.float32)
 
