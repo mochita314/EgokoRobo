@@ -51,7 +51,8 @@ def detect_nose(img,width,height,shade=args.shade):
             arr = np.append(arr,[r,g,b])
             if np.sum(arr) > 300: #黒が検出された場合
                 chin = [x,y]
-                print(chin)
+                # for debug
+                # print(chin)
                 break
         else:
             continue
@@ -72,7 +73,8 @@ def detect_nose(img,width,height,shade=args.shade):
                     # 口元の影があるかどうかによって条件判定が変わる
                     if num==1+shade:
                         mouth = y
-                        print(mouth)
+                        # for debug
+                        # print(mouth)
                     break
             else:
                 if x == chin[0]+9: #そのy座標にひとつも黒い点がなかった場合
@@ -88,7 +90,8 @@ def detect_nose(img,width,height,shade=args.shade):
             arr = np.append(arr,[r,g,b])
             if np.sum(arr) > 500: #黒検出
                 n2 = [x,y]
-                print(n2)
+                # for debug
+                # print(n2)
                 break
         else:
             continue
@@ -150,34 +153,35 @@ def coordinate_transformation(parts):
 # 座標変換後の座標をもとに、各パーツの画像を切り出して保存する
 def crop_parts(img,parts):
 
-    re_width = parts[0][0] - parts[1][0]
-    re_height = parts[3][1] - parts[2][1]
+    re_width = (parts[0][0] - parts[1][0])*1.25
+    re_height = (parts[3][1] - parts[2][1])*1.25
     re_center = [(parts[0][0]+parts[1][0])//2,(parts[2][1]+parts[3][1])//2]
 
-    le_width = parts[5][0] - parts[4][0]
-    le_height = parts[7][1] - parts[6][1]
+    le_width = (parts[5][0] - parts[4][0])*1.25
+    le_height = (parts[7][1] - parts[6][1])*1.25
     le_center = [(parts[4][0]+parts[5][0])//2,(parts[6][1]+parts[7][1])//2]
 
     nose_height = parts[9][1] - parts[8][1]
-    nose_width = abs(parts[8][0] - parts[9][0])
+    nose_width = nose_height
     nose_center = [(parts[8][0]+parts[9][0])//2,(parts[8][1]+parts[9][1])//2]
 
-    mouth_height = abs(parts[10][1] - parts[11][1])
-    mouth_width = parts[11][0] - parts[10][0]
+    mouth_height = max(abs(parts[10][1] - parts[11][1])*1.2,20)
+    mouth_width = abs(parts[11][0] - parts[10][0])*1.2
     mouth_center = [(parts[10][0]+parts[11][0])//2,(parts[10][1]+parts[11][1])//2]
 
-    re1 = [re_center[0]-(re_width//2+5),re_center[1]-(re_height//2+5)]
-    re2 = [re_center[0]+(re_width//2+5),re_center[1]+(re_height//2+5)]
-    print('re1:{},re2:{}'.format(re1,re2))
+    re1 = [re_center[0]-(re_width//2+10),re_center[1]-(re_height//2+10)]
+    re2 = [re_center[0]+(re_width//2+10),re_center[1]+(re_height//2+10)]
+    # for debug
+    # print('re1:{},re2:{}'.format(re1,re2))
 
-    le1 = [le_center[0]-(le_width//2+5),le_center[1]-(le_height//2+5)]
-    le2 = [le_center[0]+(le_width//2+5),le_center[1]+(le_height//2+5)]
+    le1 = [le_center[0]-(le_width//2+10),le_center[1]-(le_height//2+10)]
+    le2 = [le_center[0]+(le_width//2+10),le_center[1]+(le_height//2+10)]
 
-    nose1 = [nose_center[0]-(nose_width//2+5),nose_center[1]-(nose_height//2+5)]
-    nose2 = [nose_center[0]+(nose_width//2+5),nose_center[1]+(nose_height//2+5)]
+    nose1 = [nose_center[0]-(nose_width//2+10),nose_center[1]-(nose_height//2+10)]
+    nose2 = [nose_center[0]+(nose_width//2+10),nose_center[1]+(nose_height//2+10)]
 
-    mouth1 = [mouth_center[0]-(mouth_width//2+5),mouth_center[1]-(mouth_height//2+5)]
-    mouth2 = [mouth_center[0]+(mouth_width//2+5),mouth_center[1]+(mouth_height//2+5)]
+    mouth1 = [mouth_center[0]-(mouth_width//2+10),mouth_center[1]-(mouth_height//2+10)]
+    mouth2 = [mouth_center[0]+(mouth_width//2+10),mouth_center[1]+(mouth_height//2+10)]
 
     right_eye = img.crop((re1[0],re1[1],re2[0],re2[1]))
     left_eye = img.crop((le1[0],le1[1],le2[0],le2[1]))
@@ -191,6 +195,7 @@ def crop_parts(img,parts):
 
 
 # パーツを検出させたい画像の読み込み
+original_image = Image.open('../test_data/'+args.image)
 img = ImageOps.invert(Image.open('../test_data/'+args.image).convert('L'))
 
 # 仮の正規化をしてパーツを検出する
@@ -203,14 +208,12 @@ parts = y.data[0].reshape((landmark,2))
 
 # 元の画像での座標のリスト
 parts_lst = coordinate_transformation(parts)
-print(parts_lst)
+
+# for debug
+# print(parts_lst)
 
 # パーツごとに切り抜いた画像の保存
-
-crop_parts(img,parts_lst)
-
-
-
+crop_parts(original_image,parts_lst)
 
 # 検出されたランドマークの表示
-show_img_and_landmark(x.data[0][0],y.data[0].reshape((landmark,2)))
+# show_img_and_landmark(x.data[0][0],y.data[0].reshape((landmark,2)))

@@ -1,4 +1,9 @@
-# -*- イラストから顔およびパーツを検出した上でそのイラストを回転させることを目指す -*-
+#!/usr/bin/python
+
+"""
+detect_parts.pyでパーツを検出して切り出した画像を保存したのち、
+その画像をもとにして、角度に合わせて回転をさせる
+"""
 
 import cv2
 import dlib
@@ -10,10 +15,6 @@ import sys
 
 from datetime import datetime
 from time import sleep
-
-def input_img():
-    #元画像のパーツを検出し、それぞれ画像を取り出すと共に、パーツ間の距離を検出
-    return 0
 
 # 画像を縦半分で2つに分割する
 def ImgSplit_ver(im):
@@ -251,7 +252,7 @@ if __name__ == '__main__':
     dst = np_pic_paste(right_eye,right_eye_x,eye_y,dst)
     print("right eye complete")
     dst = faster_pic_paste(mouth,mouth_x,mouth_y,dst)
-    
+
     print("mouth complete")
     if shadow != 1:
         dst = faster_pic_paste(shadow,shadow_x,shadow_y,dst)
