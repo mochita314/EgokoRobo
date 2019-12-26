@@ -1,4 +1,5 @@
 /input_img/*.png
 /output_img/*.jpg
+/original_img/*.jpg
 /CNN/train_data/*.jpg
 /CNN/test_data/*.jpg
