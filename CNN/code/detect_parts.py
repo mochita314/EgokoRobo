@@ -97,19 +97,19 @@ def detect_nose(img,width,height,shade=args.shade):
             continue
         break
 
-    return n2
+    return n2,mouth
 
 # 検出した鼻の位置をもとに、画像に仮の正規化を施す
 def preprocess(img,width,height,shade=args.shade):
 
-    n2 = detect_nose(img,width,height,shade)
+    n2,mouth = detect_nose(img,width,height,shade)
 
     center = [n2[0],n2[1]-8]
     length = int(width * 0.35)
 
     img = np.array(img.crop(get_square(center,length)),dtype=np.float32) / 256.0
 
-    return img,n2
+    return img,n2,mouth
 
 def zoom(img):
 
@@ -151,7 +151,7 @@ def coordinate_transformation(parts):
     return parts2
 
 # 座標変換後の座標をもとに、各パーツの画像を切り出して保存する
-def crop_parts(img,parts):
+def crop_parts(img,parts,mouth):
 
     re_width = (parts[0][0] - parts[1][0])*1.25
     re_height = (parts[3][1] - parts[2][1])*1.25
@@ -161,7 +161,7 @@ def crop_parts(img,parts):
     le_height = (parts[7][1] - parts[6][1])*1.25
     le_center = [(parts[4][0]+parts[5][0])//2,(parts[6][1]+parts[7][1])//2]
 
-    nose_height = parts[9][1] - parts[8][1]
+    nose_height = (parts[9][1] - parts[8][1])*1.25
     nose_width = nose_height
     nose_center = [(parts[8][0]+parts[9][0])//2,(parts[8][1]+parts[9][1])//2]
 
@@ -181,8 +181,8 @@ def crop_parts(img,parts):
     nose1 = [nose_center[0]-(nose_width//2+10),nose_center[1]-(nose_height//2+10)]
     nose2 = [nose_center[0]+(nose_width//2+10),nose_center[1]+(nose_height//2+10)]
 
-    mouth1 = [mouth_center[0]-(mouth_width//2+10),mouth_center[1]-(mouth_height//2+10)]
-    mouth2 = [mouth_center[0]+(mouth_width//2+10),mouth_center[1]+(mouth_height//2+10)]
+    mouth1 = [mouth_center[0]-(mouth_width//2+10),(mouth+mouth_center[1]-(mouth_height//2+10))//2]
+    mouth2 = [mouth_center[0]+(mouth_width//2+10),(mouth+mouth_center[1]+(mouth_height//2+10))//2]
 
     right_eye = img.crop((re1[0],re1[1],re2[0],re2[1]))
     left_eye = img.crop((le1[0],le1[1],le2[0],le2[1]))
@@ -193,7 +193,7 @@ def crop_parts(img,parts):
     draw.ellipse([(re1[0],re1[1]),(re2[0],re2[1])],fill='white',outline='white')
     draw.ellipse([(le1[0],le1[1]),(le2[0],le2[1])],fill='white',outline='white')
     draw.rectangle([(mouth1[0],mouth1[1]),(mouth2[0],mouth2[1])],fill='white',outline='white')
-    draw.rectangle([(nose1[0],nose1[1]),(nose2[0],nose2[1])],fill='white',outline='white')
+    draw.rectangle([(nose1[0],nose1[1]-20),(nose2[0],nose2[1])],fill='white',outline='white')
     img.save("../../original_img/face.jpg","JPEG")
 
     right_eye.save("../../original_img/right_eye.jpg","JPEG")
@@ -202,12 +202,16 @@ def crop_parts(img,parts):
     mouth.save("../../original_img/mouth.jpg","JPEG")
 
 # パーツを検出させたい画像の読み込み
-original_image = Image.open('../test_data/'+args.image)
-img = ImageOps.invert(Image.open('../test_data/'+args.image).convert('L'))
+try:
+    original_image = Image.open('../test_data/'+args.image)
+    img = ImageOps.invert(Image.open('../test_data/'+args.image).convert('L'))
+except:
+    original_image = Image.open('../train_data/'+args.image)
+    img = ImageOps.invert(Image.open('../train_data/'+args.image).convert('L'))
 
 # 仮の正規化をしてパーツを検出する
 width,height = img.size
-dst,n2 = preprocess(img,width,height)
+dst,n2,mouth = preprocess(img,width,height)
 x,scale1 = mini_batch_data_without_t(dst)
 y = model(x)
 
@@ -220,8 +224,8 @@ parts_lst = coordinate_transformation(parts)
 # print(parts_lst)
 
 # パーツごとに切り抜いた画像の保存
-crop_parts(original_image,parts_lst)
+crop_parts(original_image,parts_lst,mouth)
 
 # for debug
 # 検出されたランドマークの表示
-# show_img_and_landmark(x.data[0][0],y.data[0].reshape((landmark,2)))
+show_img_and_landmark(x.data[0][0],y.data[0].reshape((landmark,2)))
