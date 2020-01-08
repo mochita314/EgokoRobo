@@ -167,15 +167,15 @@ if __name__ == '__main__':
         key_ratio = ud_lst2[1]*total_width_ud2/(ud_lst[1]*total_width_ud)
 
     #ベースとなる輪郭
-    im = Image.open('../input_img/face.png')
+    im = Image.open('../original_img/face.png')
 
     #配置するパーツ
-    nose = Image.open('../input_img/nose.png')
-    right_eye = Image.open('../input_img/right_eye.png')
-    left_eye = Image.open('../input_img/left_eye.png')
-    mouth = Image.open('../input_img/mouth.png')
+    nose = Image.open('../original_img/nose.png')
+    right_eye = Image.open('../original_img/right_eye.png')
+    left_eye = Image.open('../original_img/left_eye.png')
+    mouth = Image.open('../original_img/mouth.png')
     try:
-        shadow = Image.open('../input_img/shadow.png')
+        shadow = Image.open('../original_img/shadow.png')
     except:
         print("no shadow")
         shadow = 1
