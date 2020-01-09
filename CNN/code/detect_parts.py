@@ -52,7 +52,7 @@ def detect_nose(img,width,height,shade=args.shade):
             if np.sum(arr) > 300: #黒が検出された場合
                 chin = [x,y]
                 # for debug
-                # print(chin)
+                print(chin)
                 break
         else:
             continue
@@ -74,7 +74,7 @@ def detect_nose(img,width,height,shade=args.shade):
                     if num==1+shade:
                         mouth = y
                         # for debug
-                        # print(mouth)
+                        print(mouth)
                     break
             else:
                 if x == chin[0]+9: #そのy座標にひとつも黒い点がなかった場合
@@ -83,15 +83,16 @@ def detect_nose(img,width,height,shade=args.shade):
             break
 
     # 最後に鼻を検出する
-    for y in reversed(list(range(0,mouth-8))):
-        for x in list(range(chin[0]-10,chin[0]+10)):
+    for y in reversed(list(range(0,mouth-10))):
+        for x in list(range(chin[0]-15,chin[0]+15)):
+            #print(x,y)
             arr = np.array([])
             r,g,b = img.convert('RGB').getpixel((x,y))
             arr = np.append(arr,[r,g,b])
-            if np.sum(arr) > 500: #黒検出
+            if np.sum(arr) > 300: #黒検出
                 n2 = [x,y]
                 # for debug
-                # print(n2)
+                print(n2)
                 break
         else:
             continue
@@ -153,36 +154,38 @@ def coordinate_transformation(parts):
 # 座標変換後の座標をもとに、各パーツの画像を切り出して保存する
 def crop_parts(img,parts,mouth):
 
-    re_width = (parts[0][0] - parts[1][0])*1.25
-    re_height = (parts[3][1] - parts[2][1])*1.25
+    re_width = (parts[0][0] - parts[1][0])*1.3
+    re_height = (parts[3][1] - parts[2][1])*1.2
     re_center = [(parts[0][0]+parts[1][0])//2,(parts[2][1]+parts[3][1])//2]
 
-    le_width = (parts[5][0] - parts[4][0])*1.25
-    le_height = (parts[7][1] - parts[6][1])*1.25
+    le_width = (parts[5][0] - parts[4][0])*1.1
+    le_height = (parts[7][1] - parts[6][1])*1.2
     le_center = [(parts[4][0]+parts[5][0])//2,(parts[6][1]+parts[7][1])//2]
 
-    nose_height = (parts[9][1] - parts[8][1])*1.25
+    nose_height = (parts[9][1] - parts[8][1])*2
     nose_width = nose_height
     nose_center = [(parts[8][0]+parts[9][0])//2,(parts[8][1]+parts[9][1])//2]
 
-    mouth_height = max(abs(parts[10][1] - parts[11][1])*1.2,20)
-    mouth_width = abs(parts[11][0] - parts[10][0])*1.2
+    mouth_height = max(abs(parts[10][1] - parts[11][1])*1.2,10)
+    mouth_width = abs(parts[11][0] - parts[10][0])*1.5
     mouth_center = [(parts[10][0]+parts[11][0])//2,(parts[10][1]+parts[11][1])//2]
 
-    re1 = [re_center[0]-(re_width//2+10),re_center[1]-(re_height//2+10)]
-    re2 = [re_center[0]+(re_width//2+10),re_center[1]+(re_height//2+10)]
+    re1 = [re_center[0]-re_width//2,re_center[1]-re_height//2]
+    re2 = [re_center[0]+re_width//2,re_center[1]+re_height//2]
     
     # for debug
     # print('re1:{},re2:{}'.format(re1,re2))
 
-    le1 = [le_center[0]-(le_width//2+10),le_center[1]-(le_height//2+10)]
-    le2 = [le_center[0]+(le_width//2+10),le_center[1]+(le_height//2+10)]
+    le1 = [le_center[0]-le_width//2-5,le_center[1]-le_height//2-5]
+    le2 = [le_center[0]+le_width//2-5,le_center[1]+le_height//2]
 
-    nose1 = [nose_center[0]-(nose_width//2+10),nose_center[1]-(nose_height//2+10)]
-    nose2 = [nose_center[0]+(nose_width//2+10),nose_center[1]+(nose_height//2+10)]
+    nose1 = [nose_center[0]-nose_width//2,nose_center[1]-nose_height//2]
+    nose2 = [nose_center[0]+nose_width//2,nose_center[1]+nose_height//2]
 
-    mouth1 = [mouth_center[0]-(mouth_width//2+10),(mouth+mouth_center[1]-(mouth_height//2+10))//2]
-    mouth2 = [mouth_center[0]+(mouth_width//2+10),(mouth+mouth_center[1]+(mouth_height//2+10))//2]
+    mouth1 = [mouth_center[0]-mouth_width//2-5,mouth_center[1]-5]
+    mouth2 = [mouth_center[0]+mouth_width//2+5,mouth_center[1]+mouth_height+10]
+
+    print(mouth1,mouth2)
 
     right_eye = img.crop((re1[0],re1[1],re2[0],re2[1]))
     left_eye = img.crop((le1[0],le1[1],le2[0],le2[1]))
@@ -190,8 +193,8 @@ def crop_parts(img,parts,mouth):
     mouth = img.crop((mouth1[0],mouth1[1],mouth2[0],mouth2[1]))
 
     draw = ImageDraw.Draw(img)
-    draw.ellipse([(re1[0],re1[1]),(re2[0],re2[1])],fill='white',outline='white')
-    draw.ellipse([(le1[0],le1[1]),(le2[0],le2[1])],fill='white',outline='white')
+    draw.rectangle([(re1[0],re1[1]),(re2[0],re2[1])],fill='white',outline='white')
+    draw.rectangle([(le1[0],le1[1]),(le2[0],le2[1])],fill='white',outline='white')
     draw.rectangle([(mouth1[0],mouth1[1]),(mouth2[0],mouth2[1])],fill='white',outline='white')
     draw.rectangle([(nose1[0],nose1[1]-20),(nose2[0],nose2[1])],fill='white',outline='white')
     img.save("../../original_img/face.jpg","JPEG")

@@ -167,18 +167,21 @@ if __name__ == '__main__':
         key_ratio = ud_lst2[1]*total_width_ud2/(ud_lst[1]*total_width_ud)
 
     #ベースとなる輪郭
-    im = Image.open('../original_img/face.png')
+    im = Image.open('../original_img/face.jpg')
 
     #配置するパーツ
-    nose = Image.open('../original_img/nose.png')
-    right_eye = Image.open('../original_img/right_eye.png')
-    left_eye = Image.open('../original_img/left_eye.png')
-    mouth = Image.open('../original_img/mouth.png')
+    nose = Image.open('../original_img/nose.jpg')
+    right_eye = Image.open('../original_img/right_eye.jpg')
+    left_eye = Image.open('../original_img/left_eye.jpg')
+    mouth = Image.open('../original_img/mouth.jpg')
+
+    """
     try:
         shadow = Image.open('../original_img/shadow.png')
     except:
         print("no shadow")
         shadow = 1
+    """
     
     if angle != 2: #上下方向の向きを調整する必要がある場合
         
@@ -216,7 +219,7 @@ if __name__ == '__main__':
     
     dis_nose_mouth = 10
     mouth_y = int(nose_y + nose.size[1] + dis_nose_mouth*ratio)
-    shadow_y = int(nose_y + 110*ratio)
+    #shadow_y = int(nose_y + 110*ratio)
 
     #左右方向の向きを合わせる
     dst = ImgSplit_ver(dst)
@@ -232,7 +235,7 @@ if __name__ == '__main__':
             right_eye = right_eye.resize((int(lr_lst2[min_num_lr2]*right_eye.size[0]),right_eye.size[1]))
 
             nose_x = int(width*lr_lst2[min_num_lr2]-nose.size[0]/2)
-            right_eye_x = int(nose_x-100*lr_lst2[min_num_lr2]-right_eye.size[0]/2)
+            right_eye_x = int(nose_x-80*lr_lst2[min_num_lr2]-right_eye.size[0]/2)
             mouth_x = int(nose_x + nose.size[0]/2 - mouth[i].size[0])
         else:
             dst[i] = dst[i].resize((int(width*lr_lst2[abs(1-min_num_lr2)]),height))
@@ -242,7 +245,7 @@ if __name__ == '__main__':
     mouth = get_concat_h(mouth[0],mouth[1])
 
     left_eye_x = int(nose_x + 60)
-    shadow_x = int(nose_x + nose.size[0]/2 - shadow.size[0]/2)
+    #shadow_x = int(nose_x + nose.size[0]/2 - shadow.size[0]/2)
 
     #パーツ同士の重なりに注意しながら貼り付け
     dst = faster_pic_paste(nose,nose_x,nose_y,dst)
@@ -252,11 +255,13 @@ if __name__ == '__main__':
     dst = np_pic_paste(right_eye,right_eye_x,eye_y,dst)
     print("right eye complete")
     dst = faster_pic_paste(mouth,mouth_x,mouth_y,dst)
-
     print("mouth complete")
+
+    """
     if shadow != 1:
         dst = faster_pic_paste(shadow,shadow_x,shadow_y,dst)
         print("shadow complete")
+    """
 
     if min_num_lr2==1 and lr_lst[1]<0.85: #顔が左向きの場合
         dst = ImageOps.mirror(dst)
